@@ -1,34 +1,57 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 using Business.Entities;
+using Business.Services;
+using Pokedex.Models;
+using AutoMapper;
 
 namespace Pokedex.Controllers;
 
 [Route("pokedex")]
 public class PokedexController : ControllerBase
 {
+    private readonly IPokedexService _pokedexService;
+    private readonly IMapper _mapper;
+
+    public PokedexController(
+        IPokedexService pokedexService,
+        IMapper mapper)
+    {
+        _pokedexService = pokedexService;
+        _mapper = mapper;
+    }
+
     [HttpPost]
     [SwaggerOperation("Register new pokemon.")]
     [ProducesResponseType(StatusCodes.Status201Created)]
-    public async Task<IActionResult> AddPokemon()
+    public async Task<IActionResult> AddPokemon([FromBody] PokemonModel model)
     {
-        return Ok();
+        var pokemon = _mapper.Map<Pokemon>(model);
+
+        var pokemonById = await _pokedexService.AddPokemon(pokemon);
+        return Created($"{HttpContext.Request.Path}/{pokemonById}", null);
     }
 
     [HttpPut]
     [SwaggerOperation("Actualize existing pokemon.")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
-    public async Task<IActionResult> UpdatePokemon()
+    public async Task<IActionResult> UpdatePokemon([FromBody] PokemonModel model)
     {
-        return Ok();
+        var pokemon = _mapper.Map<Pokemon>(model);
+
+        await _pokedexService.UpdatePokemon(pokemon);
+
+        return NoContent();
     }
 
-    [HttpDelete]
+    [HttpDelete("{pokemonId:guid}")]
     [SwaggerOperation("Delete existing pokemon.")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
-    public async Task<IActionResult> DeletePokemon()
+    public async Task<IActionResult> DeletePokemon(Guid pokemonId)
     {
-        return Ok();
+        await _pokedexService.DeletePokemon(pokemonId);
+
+        return NoContent();
     }
 
     [HttpGet("{pokemonId:guid}")]
