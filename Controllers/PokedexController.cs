@@ -1,9 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Swashbuckle.AspNetCore.Annotations;
+﻿using AutoMapper;
 using Business.Entities;
 using Business.Services;
+using Microsoft.AspNetCore.Mvc;
 using Pokedex.Models;
-using AutoMapper;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace Pokedex.Controllers;
 
@@ -28,7 +28,7 @@ public class PokedexController : ControllerBase
     {
         var pokemon = _mapper.Map<Pokemon>(model);
 
-        var pokemonById = await _pokedexService.AddPokemon(pokemon);
+        var pokemonById = await _pokedexService.AddPokemonAsync(pokemon);
         return Created($"{HttpContext.Request.Path}/{pokemonById}", null);
     }
 
@@ -39,7 +39,7 @@ public class PokedexController : ControllerBase
     {
         var pokemon = _mapper.Map<Pokemon>(model);
 
-        await _pokedexService.UpdatePokemon(pokemon);
+        await _pokedexService.UpdatePokemonAsync(pokemon);
 
         return NoContent();
     }
@@ -49,7 +49,7 @@ public class PokedexController : ControllerBase
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<IActionResult> DeletePokemon(Guid pokemonId)
     {
-        await _pokedexService.DeletePokemon(pokemonId);
+        await _pokedexService.DeletePokemonAsync(pokemonId);
 
         return NoContent();
     }
@@ -59,6 +59,8 @@ public class PokedexController : ControllerBase
     [ProducesResponseType(typeof(Pokemon), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetPokemonById(Guid pokemonId)
     {
+        await _pokedexService.GetPokemonAsync(pokemonId);
+
         return Ok();
     }
 
