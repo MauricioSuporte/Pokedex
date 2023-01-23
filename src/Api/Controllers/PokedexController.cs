@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Business.Core.Notifications;
 using Business.Entities;
 using Business.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -12,23 +13,28 @@ public class PokedexController : ControllerBase
 {
     private readonly IPokedexService _pokedexService;
     private readonly IMapper _mapper;
+    private readonly INotifier _notifier;
 
     public PokedexController(
         IPokedexService pokedexService,
-        IMapper mapper)
+        IMapper mapper,
+        INotifier notifier)
     {
         _pokedexService = pokedexService;
         _mapper = mapper;
+        _notifier = notifier;
     }
 
     [HttpPost]
     [SwaggerOperation("Register new pokemon.")]
     [ProducesResponseType(StatusCodes.Status201Created)]
+    [ProducesResponseType(typeof(IEnumerable<Notification>), StatusCodes.Status422UnprocessableEntity)]
     public async Task<IActionResult> AddPokemon([FromBody] PokemonModel model)
     {
         var pokemon = _mapper.Map<Pokemon>(model);
 
         var pokemonById = await _pokedexService.AddPokemonAsync(pokemon);
+
         return Created($"{HttpContext.Request.Path}/{pokemonById}", null);
     }
 
@@ -59,9 +65,7 @@ public class PokedexController : ControllerBase
     [ProducesResponseType(typeof(Pokemon), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetPokemonById(Guid pokemonId)
     {
-        await _pokedexService.GetPokemonAsync(pokemonId);
-
-        return Ok();
+        return Ok(new Pokemon("", Guid.NewGuid(), Business.Enums.Gender.All, 1, 1, 1, 1));
     }
 
     [HttpGet("find")]

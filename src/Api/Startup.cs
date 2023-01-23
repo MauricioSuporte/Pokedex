@@ -1,4 +1,7 @@
-﻿namespace Pokedex;
+﻿using Business.Core.Notifications;
+using Pokedex.Configurations;
+
+namespace Pokedex;
 
 public class Startup
 {
@@ -16,6 +19,9 @@ public class Startup
         _services.AddControllers();
         _services.AddEndpointsApiExplorer();
         _services.AddSwaggerGen(options => options.EnableAnnotations());
+        _services.AddSmartNotification();
+        _services.AddServices();
+        _services.AddRepositories();
         _services.AddAutoMapper(GetType().Assembly);
     }
 
