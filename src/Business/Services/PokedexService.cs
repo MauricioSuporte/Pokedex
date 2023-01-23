@@ -29,7 +29,7 @@ public class PokedexService : IPokedexService
 
         if (registeredPokemon != null)
         {
-            _notifier.Notify("Já existe um pokemon com o mesmo nome");
+            _notifier.Notify("There is already a pokemon with the same name.");
             return null;
         }
 
@@ -44,7 +44,7 @@ public class PokedexService : IPokedexService
 
         if (!hasPokemon)
         {
-            _notifier.Notify("Não foi possivel encontrar o pokemon informado para deleta-lo.");
+            _notifier.Notify("It was not possible to find the pokemon informed to delete it.");
             return;
         }
 
@@ -65,7 +65,7 @@ public class PokedexService : IPokedexService
 
         if (!hasPokemon)
         {
-            _notifier.Notify("Não foi possivel encontrar o pokemon informado.");
+            _notifier.Notify("It was not possible to find the specified pokemon.");
             return;
         }
 
@@ -73,7 +73,7 @@ public class PokedexService : IPokedexService
 
         if (registeredPokemon != null && registeredPokemon.Id != pokemon.Id)
         {
-            _notifier.Notify("Não é possível alterar o nome desse pokemon pois já existe um outro com o mesmo nome possivel encontrar o pokemon informado.");
+            _notifier.Notify("It was not possible to change the name of this pokemon because there is already one with the same name.");
             return;
         }
 
