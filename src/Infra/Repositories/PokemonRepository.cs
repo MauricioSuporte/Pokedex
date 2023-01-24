@@ -1,13 +1,21 @@
 ﻿using Business.Entities;
 using Business.Repositories;
+using Microsoft.EntityFrameworkCore;
 
 namespace Infra.Repositories;
 
 public class PokemonRepository : IPokemonRepository
 {
-    public Task AddAsync(Pokemon pokemon)
+    private readonly EFDbContext _efContext;
+
+    public PokemonRepository(EFDbContext efContext)
     {
-        throw new NotImplementedException();
+        _efContext = efContext;
+    }
+
+    public async Task AddAsync(Pokemon pokemon)
+    {
+        await _efContext.Pokemons.AddAsync(pokemon);
     }
 
     public void Delete(Guid pokemonId)
@@ -20,9 +28,10 @@ public class PokemonRepository : IPokemonRepository
         throw new NotImplementedException();
     }
 
-    public Task<Pokemon> GetByIdAsync(Guid pokemonId)
+    public Task<Pokemon?> GetByIdAsync(Guid pokemonId)
     {
-        throw new NotImplementedException();
+        // Select * from pokemon where pokemonId == {pokemonId}
+        return _efContext.Pokemons.FirstOrDefaultAsync(p => p.Id == pokemonId);
     }
 
     public Task<Pokemon> GetByNameAsync(string name)
