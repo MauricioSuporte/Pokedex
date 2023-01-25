@@ -12,8 +12,9 @@ public class EFDbContext : DbContext
 
     public DbSet<Pokemon> Pokemons { get; set; }
 
-    public EFDbContext(DbContextOptions<EFDbContext> options) : base(options)
+    public EFDbContext(DbContextOptions<EFDbContext> options, IHostingEnvironment environment) : base(options)
     {
+        _hostingEnvironment = environment;
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -24,7 +25,6 @@ public class EFDbContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder buider)
     {
-        // Acho q está errado
         var logConfig = new[]
         {
             RelationalEventId.ConnectionOpened,
@@ -38,8 +38,6 @@ public class EFDbContext : DbContext
         buider
             .LogTo(Console.WriteLine, logConfig)
             .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTrackingWithIdentityResolution);
-
-        buider.EnableDetailedErrors().EnableSensitiveDataLogging();
 
         if (!_hostingEnvironment.IsProduction())
             buider.EnableDetailedErrors().EnableSensitiveDataLogging();
