@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Business.Core.Notifications;
 using Business.Entities;
+using Business.Queries;
 using Business.Services;
 using Microsoft.AspNetCore.Mvc;
 using Pokedex.Models;
@@ -71,8 +72,13 @@ public class PokedexController : ControllerBase
     [HttpGet("find")]
     [SwaggerOperation("Find pokemons.")]
     [ProducesResponseType(typeof(IEnumerable<Pokemon>), StatusCodes.Status200OK)]
-    public async Task<IActionResult> FindPokemon()
+    public async Task<IActionResult> FindPokemon([FromQuery] FindPokemonQuery query)
     {
-        return Ok();
+        var pokemons =  await _pokedexService.FindAsync(query);
+
+        HttpContext.Response.Headers.Add("X-Total-Count", pokemons.Count().ToString());
+
+        var result = _mapper.Map<IEnumerable<PokemonModel>>(pokemons);
+        return Ok(result);
     }
 }

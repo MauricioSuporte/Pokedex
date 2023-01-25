@@ -1,5 +1,6 @@
 ﻿using Business.Core.Notifications;
 using Business.Entities;
+using Business.Queries;
 using Business.Repositories;
 
 namespace Business.Services;
@@ -34,6 +35,7 @@ public class PokedexService : IPokedexService
         }
 
         await _pokemonRepository.AddAsync(pokemon);
+        await _pokemonRepository.CommitAsync();
 
         return pokemon.Id;
     }
@@ -49,6 +51,7 @@ public class PokedexService : IPokedexService
         }
 
         _pokemonRepository.Delete(pokemonId);
+        await _pokemonRepository.CommitAsync();
     }
 
     public async Task UpdatePokemonAsync(Pokemon pokemon)
@@ -78,5 +81,13 @@ public class PokedexService : IPokedexService
         }
 
         _pokemonRepository.Update(pokemon);
+        await _pokemonRepository.CommitAsync();
+    }
+
+    public async Task<IEnumerable<Pokemon>> FindAsync(FindPokemonQuery query)
+    {
+        var pokemons = await _pokemonRepository.FindAsync(query);
+        await _pokemonRepository.CommitAsync();
+        return pokemons;
     }
 }

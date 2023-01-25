@@ -1,8 +1,10 @@
-﻿using Business.Entities;
+﻿using Business.Core;
+using Business.Entities;
+using Business.Queries;
 
 namespace Business.Repositories;
 
-public interface IPokemonRepository
+public interface IPokemonRepository : IRepositoryBase
 {
     Task AddAsync(Pokemon pokemon);
 
@@ -12,9 +14,9 @@ public interface IPokemonRepository
 
     Task<bool> HasPokememonAsync(Guid pokemonId);
 
-    Task<Pokemon> GetByIdAsync(Guid pokemonId);
+    Task<Pokemon?> GetByIdAsync(Guid pokemonId);
 
-    Task<Pokemon> GetByNameAsync(string name);
+    Task<Pokemon?> GetByNameAsync(string name);
 
-    Task<IEnumerable<Pokemon>> FindAsync();
+    Task<IEnumerable<Pokemon>> FindAsync(FindPokemonQuery query);
 }
