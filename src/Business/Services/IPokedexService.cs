@@ -11,5 +11,7 @@ public interface IPokedexService
 
     Task DeletePokemonAsync(Guid pokemonId);
 
+    Task<Pokemon?> GetByIdAsync(Guid pokemonId);
+
     Task<IEnumerable<Pokemon>> FindAsync(FindPokemonQuery query);
 }

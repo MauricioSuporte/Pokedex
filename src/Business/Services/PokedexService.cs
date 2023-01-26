@@ -84,6 +84,11 @@ public class PokedexService : IPokedexService
         await _pokemonRepository.CommitAsync();
     }
 
+    public async Task<Pokemon?> GetByIdAsync(Guid pokemonId)
+    {
+        return await _pokemonRepository.GetByIdAsync(pokemonId);
+    }
+
     public async Task<IEnumerable<Pokemon>> FindAsync(FindPokemonQuery query)
     {
         var pokemons = await _pokemonRepository.FindAsync(query);

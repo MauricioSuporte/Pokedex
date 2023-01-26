@@ -14,16 +14,13 @@ public class PokedexController : ControllerBase
 {
     private readonly IPokedexService _pokedexService;
     private readonly IMapper _mapper;
-    private readonly INotifier _notifier;
 
     public PokedexController(
         IPokedexService pokedexService,
-        IMapper mapper,
-        INotifier notifier)
+        IMapper mapper)
     {
         _pokedexService = pokedexService;
         _mapper = mapper;
-        _notifier = notifier;
     }
 
     [HttpPost]
@@ -66,7 +63,14 @@ public class PokedexController : ControllerBase
     [ProducesResponseType(typeof(Pokemon), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetPokemonById(Guid pokemonId)
     {
-        return Ok(new Pokemon("", Guid.NewGuid(), Business.Enums.Gender.All, 1, 1, 1, 1));
+        var pokemon = await _pokedexService.GetByIdAsync(pokemonId);
+
+        if (pokemon == null)
+            return NotFound();
+
+        var result = _mapper.Map<PokemonModel>(pokemon);
+
+        return Ok(result);
     }
 
     [HttpGet("find")]
